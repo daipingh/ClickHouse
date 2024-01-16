@@ -1,0 +1,15 @@
+diff --git a/utilities/transactions/lock/range/range_tree/lib/portability/toku_time.h b/utilities/transactions/lock/range/range_tree/lib/portability/toku_time.h
+index 75f195e97..30a58e0e7 100644
+--- a/utilities/transactions/lock/range/range_tree/lib/portability/toku_time.h
++++ b/utilities/transactions/lock/range/range_tree/lib/portability/toku_time.h
+@@ -131,6 +131,10 @@ static inline tokutime_t toku_time_now(void) {
+   uint64_t result;
+   __asm __volatile__("mrs %[rt], cntvct_el0" : [ rt ] "=r"(result));
+   return result;
++#elif defined(__mips64__)
++  struct timespec t;
++  clock_gettime(CLOCK_MONOTONIC, &t);
++  return t.tv_sec * (1UL * 1000 * 1000 * 1000) + t.tv_nsec;
+ #elif defined(__powerpc__)
+   return __ppc_get_timebase();
+ #elif (defined(__riscv) && __riscv_xlen == 64)
